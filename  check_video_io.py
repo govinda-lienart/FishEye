@@ -20,4 +20,3 @@ while True:
     print(f"Frame {frame_idx} at {timestamp:.2f}s")
     frame_idx += 1
 
-cap.release()

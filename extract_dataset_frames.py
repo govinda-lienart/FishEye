@@ -21,7 +21,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--video",
         type=Path,
-        default=Path("first_hour.mp4.webm"),
+        default=Path("_hour.mp4.webm"),
         help="Path to the source video.",
     )
     parser.add_argument(
@@ -86,7 +86,8 @@ def main() -> None:
         target_dir = val_dir if use_val else train_dir
         suffix = "val" if use_val else "train"
         filename = target_dir / f"fish_{suffix}_{frame_idx:06d}.jpg"
-        cv2.imwrite(str(filename), frame)
+        if not cv2.imwrite(str(filename), frame):
+            raise RuntimeError(f"Failed to write frame to {filename}")
 
         saved += 1
         frame_idx += step
