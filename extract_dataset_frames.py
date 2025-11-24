@@ -8,11 +8,8 @@ Labeling tools (e.g., makesense.ai) can then use dataset/images/train and
 dataset/images/val. Matching label folders should be created manually.
 """
 
-from __future__ import annotations
-
 import argparse
 from pathlib import Path
-
 import cv2
 
 
@@ -21,7 +18,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--video",
         type=Path,
-        default=Path("_hour.mp4.webm"),
+        default=Path("first_hour.mp4.webm"),
         help="Path to the source video.",
     )
     parser.add_argument(
