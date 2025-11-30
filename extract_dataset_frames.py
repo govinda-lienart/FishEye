@@ -4,8 +4,6 @@ Usage:
     conda run -n fisheye python extract_dataset_frames.py \
         --video first_hour.mp4.webm --output dataset --max-frames 60
 
-Labeling tools (e.g., makesense.ai) can then use dataset/images/train and
-dataset/images/val. Matching label folders should be created manually.
 """
 
 import argparse

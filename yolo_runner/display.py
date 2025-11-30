@@ -5,7 +5,10 @@ import cv2
 
 def show_frame(window_name: str, frame) -> bool:
     cv2.imshow(window_name, frame)
-    return cv2.waitKey(1) & 0xFF != ord("q")
+    key = cv2.waitKey(1) & 0xFF
+    if key in (ord("q"), 27):  # stop on q or ESC
+        return False
+    return True
 
 
 def close_window(window_name: str) -> None:

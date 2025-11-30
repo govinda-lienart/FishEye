@@ -1,9 +1,5 @@
-from __future__ import annotations
-
 from pathlib import Path
-
 from ultralytics import YOLO
-
 from .args import parse_args
 from .detection import run_detection_mode, run_tracker_mode
 from .records import DetectionLogger
@@ -15,7 +11,7 @@ def run_cli() -> None:
     run(args)
 
 
-def run(args) -> None:
+def run(args):
     source: Path = args.source
     weights: Path = args.weights
 
@@ -32,10 +28,9 @@ def run(args) -> None:
     logger = DetectionLogger(args.log_parquet, args.progress_interval)
 
     if args.tracker:
-        run_tracker_mode(
+        log_path = run_tracker_mode(
             model=model,
             source=source,
-            conf=args.conf,
             stride=args.stride,
             display=args.display,
             logger=logger,
@@ -44,10 +39,9 @@ def run(args) -> None:
             end_frame=end_frame,
         )
     else:
-        run_detection_mode(
+        log_path = run_detection_mode(
             model=model,
             source=source,
-            conf=args.conf,
             stride=args.stride,
             display=args.display,
             logger=logger,
@@ -55,3 +49,4 @@ def run(args) -> None:
             start_frame=start_frame,
             end_frame=end_frame,
         )
+    return logger.log_path

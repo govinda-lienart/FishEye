@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import logging
 from argparse import Namespace
 from pathlib import Path
@@ -9,12 +7,7 @@ from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from yolo_runner.args import (
-    DEFAULT_CONFIDENCE,
-    DEFAULT_LOG_DIR,
-    DEFAULT_SOURCE,
-    DEFAULT_WEIGHTS,
-)
+from yolo_runner.args import DEFAULT_LOG_DIR, DEFAULT_SOURCE, DEFAULT_WEIGHTS
 from yolo_runner.main import run as run_yolo
 
 app = FastAPI()
@@ -60,7 +53,6 @@ async def form(request: Request):
     defaults = {
         "source": str(DEFAULT_SOURCE),
         "weights": str(DEFAULT_WEIGHTS),
-        "conf": str(DEFAULT_CONFIDENCE),
         "start_seconds": "0",
         "end_seconds": "",
         "stride": "1",
@@ -80,7 +72,6 @@ async def run(
     request: Request,
     source: str = Form(default=str(DEFAULT_SOURCE)),
     weights: str = Form(default=str(DEFAULT_WEIGHTS)),
-    conf: str = Form(default=str(DEFAULT_CONFIDENCE)),
     start_seconds: str = Form(default="0"),
     end_seconds: str = Form(default=""),
     stride: str = Form(default="1"),
@@ -92,7 +83,6 @@ async def run(
 ):
     source_path = _str_path(source, DEFAULT_SOURCE)
     weights_path = _str_path(weights, DEFAULT_WEIGHTS)
-    conf_value = _float(conf, DEFAULT_CONFIDENCE)
     start_value = _float(start_seconds, 0.0)
     end_value = _optional_float(end_seconds)
     stride_value = max(1, _int(stride, 1))
@@ -109,7 +99,6 @@ async def run(
     args = Namespace(
         source=source_path,
         weights=weights_path,
-        conf=conf_value,
         display=display_enabled,
         start_seconds=start_value,
         end_seconds=end_value,
@@ -149,7 +138,6 @@ async def run(
     defaults = {
         "source": source,
         "weights": weights,
-        "conf": conf,
         "start_seconds": start_seconds,
         "end_seconds": end_seconds,
         "stride": stride,

@@ -5,7 +5,6 @@ from pathlib import Path
 
 DEFAULT_SOURCE = Path("videos/first_hour.mp4.webm")
 DEFAULT_WEIGHTS = Path("runs/detect/train/weights/best.pt")
-DEFAULT_CONFIDENCE = 0.5
 DEFAULT_LOG_DIR = Path("dataset/outputs/logs")
 
 
@@ -27,12 +26,6 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=DEFAULT_WEIGHTS,
         help="Checkpoint to load (e.g. runs/detect/train*/weights/best.pt).",
-    )
-    parser.add_argument(
-        "--conf",
-        type=float,
-        default=DEFAULT_CONFIDENCE,
-        help="Confidence threshold for keeping detections.",
     )
     parser.add_argument(
         "--display",

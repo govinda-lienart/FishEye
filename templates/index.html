@@ -18,15 +18,12 @@
     <div class="message">{{ message }}</div>
   {% endif %}
   <form method="post">
-    <label>Source video path:
-      <input type="text" name="source" value="{{ defaults.source }}">
-    </label>
-    <label>Weights path:
-      <input type="text" name="weights" value="{{ defaults.weights }}">
-    </label>
-    <label>Confidence (0-1):
-      <input type="number" step="0.01" name="conf" value="{{ defaults.conf }}">
-    </label>
+   <label>Source video path:
+     <input type="text" name="source" value="{{ defaults.source }}">
+   </label>
+   <label>Weights path:
+     <input type="text" name="weights" value="{{ defaults.weights }}">
+   </label>
     <label>Start seconds:
       <input type="number" step="0.1" name="start_seconds" value="{{ defaults.start_seconds }}">
     </label>
@@ -45,9 +42,9 @@
       <input type="text" name="log_path" value="{{ defaults.log_path }}" placeholder="Leave blank for timestamped file">
     </label>
     <label>Progress interval (frames):
-      <input type="number" name="progress_interval" min="0" value="{{ defaults.progress_interval }}">
-    </label>
-    <button type="submit">Run</button>
-  </form>
+     <input type="number" name="progress_interval" min="0" value="{{ defaults.progress_interval }}">
+   </label>
+   <button type="submit">Run</button>
+ </form>
 </body>
 </html>

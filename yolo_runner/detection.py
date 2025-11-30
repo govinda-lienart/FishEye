@@ -16,7 +16,6 @@ TRACKER_CONFIG = "ultralytics/cfg/trackers/bytetrack.yaml"
 def run_tracker_mode(
     model: YOLO,
     source: Path,
-    conf: float,
     stride: int,
     display: bool,
     logger: DetectionLogger,
@@ -29,7 +28,6 @@ def run_tracker_mode(
     try:
         for result in model.track(
             source=str(source),
-            conf=conf,
             tracker=TRACKER_CONFIG,
             vid_stride=stride,
             stream=True,
@@ -58,7 +56,6 @@ def run_tracker_mode(
 def run_detection_mode(
     model: YOLO,
     source: Path,
-    conf: float,
     stride: int,
     display: bool,
     logger: DetectionLogger,
@@ -85,7 +82,7 @@ def run_detection_mode(
                 break
             current_frame = frame_idx
 
-            results = model.predict(frame, conf=conf, verbose=False)
+            results = model.predict(frame, verbose=False)
             result = results[0]
             annotated = result.plot()
 
