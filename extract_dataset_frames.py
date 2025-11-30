@@ -1,18 +1,31 @@
 """Extract evenly spaced frames and split them into train/val folders.
 
-Usage:
-    conda run -n fisheye python extract_dataset_frames.py \
-        --video first_hour.mp4.webm --output dataset --max-frames 60
+Exampl Usage:
+   python extract_dataset_frames.py \
+    --video videos/first_hour.mp4.webm \
+    --output dataset \
+    --frame-gap 3 \
+    --max-frames 100 \
+    --val-ratio 0.2
 
 """
 
 import argparse
+import logging
 from pathlib import Path
 import cv2
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Sample frames for labeling.")
+logging.basicConfig(format="%(levelname)s: %(message)s")
+LOGGER = logging.getLogger(__name__)
+
+
+def parse_cli_args() -> argparse.Namespace:
+    """Command-line argument parsing"""
+
+  
+    parser = argparse.ArgumentParser(description="Sample frames for labeling.")     # creation/instantiation of a ArgumentParser object stored in parser which will contain all the arguments (python extract_dataset_frames.py --help)   # it's like creating a survey form
+
     parser.add_argument(
         "--video",
         type=Path,
@@ -43,15 +56,32 @@ def parse_args() -> argparse.Namespace:
         default=0.2,
         help="Fraction of frames routed to validation images (0-1).",
     )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Enable verbose logging output.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
-    args = parse_args()
+    """Entry point that parses arguments, samples frames, and writes them to train/val folders."""
+    # --- CLI inputs & validation ---
+    args = parse_cli_args() # this first step - it builts the ArgumentParser object and return the parsed (processed) Namespace with all its attribuutes (default /user)
+    LOGGER.setLevel(logging.INFO if args.verbose else logging.WARNING)
     video_path = args.video
     output_root = args.output
     val_ratio = max(0.0, min(1.0, args.val_ratio))
+    LOGGER.info(
+        "Config parsed | video=%s output=%s frame_gap=%ss max_frames=%s val_ratio=%.2f",
+        video_path,
+        output_root,
+        args.frame_gap,
+        args.max_frames,
+        val_ratio,
+    )
 
+    # --- Video capture setup ---
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
         raise RuntimeError(f"Could not open video: {video_path}")
@@ -63,17 +93,21 @@ def main() -> None:
     step = max(1, int(fps * args.frame_gap))
     val_interval = int(round(1 / val_ratio)) if val_ratio > 0 else 0
 
+    # --- Output structure prep ---
     train_dir = output_root / "images" / "train"
     val_dir = output_root / "images" / "val"
     train_dir.mkdir(parents=True, exist_ok=True)
     if val_ratio > 0:
         val_dir.mkdir(parents=True, exist_ok=True)
 
+
+  # --- Frame sampling loop ---
     frame_idx = 0
     saved = 0
+
     while saved < args.max_frames:
-        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
-        ok, frame = cap.read()
+        cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx) # cv2.CAP_PROP_POS_FRAMES is the property code for  “current frame index” inside a VideoCapture while frame_idx is the integer index we want to jump to.
+        ok, frame = cap.read()  # cap.read() returns a tuple where ,  When ok is True, the second value (frame) is a NumPy array containing the current frame’s pixel data (or None if the read failed).
         if not ok:
             break
 
@@ -84,8 +118,8 @@ def main() -> None:
         if not cv2.imwrite(str(filename), frame):
             raise RuntimeError(f"Failed to write frame to {filename}")
 
-        saved += 1
-        frame_idx += step
+        saved += 1 # saved = saved + 1
+        frame_idx += step # frame_idx = frame_idx + step;
 
     cap.release()
     print(
@@ -94,4 +128,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main() # so when using the CLI - main() function is triggered first
